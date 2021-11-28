@@ -1,5 +1,6 @@
 package ml.basiclogin
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -12,16 +13,16 @@ class Main : AppCompatActivity() {
 
         btn_login_screen.setOnClickListener(){
 
-            val intent = Intent(this, Login::class.java)
+            val pref = getSharedPreferences("logged", Context.MODE_PRIVATE)
+            val loggedIn = pref.getBoolean("loggedIn", false)
 
-            startActivity(intent)
-        }
-
-        btn_register_screen.setOnClickListener(){
-
-            val intent = Intent(this, Login::class.java)
-
-            startActivity(intent)
+            if(loggedIn){
+                val intent = Intent(this, Welcome::class.java)
+                startActivity(intent)
+            }else{
+                val intent = Intent(this, Login::class.java)
+                startActivity(intent)
+            }
         }
     }
 }
