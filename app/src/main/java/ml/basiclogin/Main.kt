@@ -24,5 +24,17 @@ class Main : AppCompatActivity() {
                 startActivity(intent)
             }
         }
+        btn_register_screen.setOnClickListener(){
+            val pref = getSharedPreferences("logged", Context.MODE_PRIVATE)
+            val loggedIn = pref.getBoolean("loggedIn", false)
+
+            if(loggedIn){
+                val intent = Intent(this, Welcome::class.java)
+                startActivity(intent)
+            }else{
+                val intent = Intent(this, Register::class.java)
+                startActivity(intent)
+            }
+        }
     }
 }

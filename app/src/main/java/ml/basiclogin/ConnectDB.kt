@@ -1,8 +1,10 @@
 package ml.basiclogin
 
+import android.os.NetworkOnMainThreadException
 import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import java.net.HttpRetryException
 import java.net.HttpURLConnection
 import java.net.URL
 import java.net.URLEncoder
@@ -15,7 +17,7 @@ import java.sql.*
 object ConnectDB {
     private val servername = "holaoficial.ml"
 
-    fun sendGetRequest(method : String, parms : Map<String, String>) : JSONObject{
+    fun sendGetRequest(method: String, parms: Map<String, String>) : JSONObject{
 
         var reqParam = ""
 
@@ -28,27 +30,33 @@ object ConnectDB {
 
         println(mURL)
 
-        with(mURL.openConnection() as HttpURLConnection) {
-            requestMethod = "GET"
+        try{
+            with(mURL.openConnection() as HttpURLConnection) {
+                requestMethod = "GET"
 
-            println("URL : $url")
-            println("Response Code : $responseCode")
+                println("URL : $url")
+                println("Response Code : $responseCode")
 
-            BufferedReader(InputStreamReader(inputStream)).use {
-                var response : String = ""
+                BufferedReader(InputStreamReader(inputStream)).use {
+                    var response : String = ""
 
-                var inputLine = it.readLine()
-                while (inputLine != null) {
-                    response += inputLine
-                    inputLine = it.readLine()
+                    var inputLine = it.readLine()
+                    while (inputLine != null) {
+                        response += inputLine
+                        inputLine = it.readLine()
+                    }
+                    it.close()
+
+                    println(response)
+
+                    return JSONObject(response)
                 }
-                it.close()
-
-                println(response)
-
-                return JSONObject(response)
             }
+        }catch(e : NetworkOnMainThreadException){
+            e.printStackTrace()
+            return JSONObject()
         }
+
     }
 }
 
